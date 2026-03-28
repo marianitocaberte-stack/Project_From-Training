@@ -1,0 +1,87 @@
+import os 
+from tkinter import *
+import random
+
+# Rock/Paper/Scissors
+# clear function inserted at the start of GUI function to clear screen.
+def clear():
+	os.system("clear")
+
+#1a a function to initialize the game
+def reset():
+	user_entry.delete(0,END)
+	enter_button.config(state=NORMAL)
+	reset_button.pack_forget()
+
+#3a function for generating computer data
+def get_computer_data():
+	choices = ["rock", "paper", "scissors"]
+	computer_choice = random.choice(choices)
+	return computer_choice
+#4a function for generating user data
+def get_user_data():
+	try:
+		choices = {1:"rock", 2:"paper", 3:"scissors"}
+		user_choice = int(user_entry.get())
+		return choices[user_choice]
+	except Exception as e:
+		return f"Invalid Entry: ---{e}--"
+
+#5a function to determine the winner
+def determine_winner(computer_entry, user_entry):
+	# Tie
+	if computer_entry == user_entry:
+		return "It's a Tie"
+	# Computer as a winner
+	elif (computer_entry == "rock" and user_entry == "scissors") or \
+		 (computer_entry == "paper" and user_entry == "rock") or \
+		 (computer_entry == "scissors" and  user_entry == "paper"):
+		return "Computer Wins!!!"
+	# User as a winner
+	elif (user_entry == "rock" and computer_entry == "scissors") or \
+		 (user_entry == "paper" and computer_entry == "rock") or \
+		 (user_entry == "scissors" and computer_entry == "paper"):
+		return "You Win!!"
+
+	else:
+		return
+#2 Create the main game
+def game(): 
+	computer_entry = get_computer_data() #3 create a function to generate computer data
+	user_entry = get_user_data() #4 create a function to generate user data
+
+	computer_label.config(text=f"Computer Choses:  {computer_entry}")
+	user_label.config(text=f"You Chose:       {user_entry}")
+
+	verdict = determine_winner(computer_entry, user_entry) #5 create function to generate a result to determine the winner
+
+	results_label.config(text=f"The Final Verdict:   {verdict}") #6 End results
+	enter_button.config(state=DISABLED)
+	reset_button.pack(pady=20)
+
+#1 Work starts here, creating GUI.
+def gui():
+	global user_entry, computer_label, user_label, results_label, enter_button, reset_button
+	clear()
+	root = Tk()
+	root.title("ROCK/PAPER/SCISSORS")
+	root.geometry('700x500')
+
+	instruction_label = Label(root, text="Choose 1 - rock, 2 - paper, 3 - scissors", font=("Helvetica", 20))
+	instruction_label.pack(pady=10)
+	user_entry = Entry(root, font=("Helvetica", 50), width=3, justify="center")
+	user_entry.pack(pady=10)
+	computer_label = Label(root, text="Welcome To The Game")
+	computer_label.pack(pady=10)
+	user_label = Label(root, text="Have A Blessed day")
+	user_label.pack(pady=10)
+	results_label = Label(root, text="Enjoy")
+	results_label.pack(pady=10)
+	enter_button = Button(root, text="ENTER", font=("Helvetica", 30), command=game) #2 related to game function
+	enter_button.pack(pady=10)
+	reset_button = Button(root, text="RESET", font=("Helvetica", 20), command=reset) #1a related to reset function
+	reset_button.pack(pady=10)
+
+	root.mainloop()
+
+gui()
