@@ -1,0 +1,59 @@
+import os 
+from tkinter import *
+import random
+
+def clear():
+	os.system("clear")
+
+def reset():
+	global number_to_guess, number_of_guesses
+	number_to_guess = random.randint(1,10)
+	number_of_guesses = 0
+	user_entry.delete(0,END)
+	enter_button.config(state=NORMAL)
+	reset_button.pack_forget()
+
+def game():
+	global number_to_guess, number_of_guesses
+	try:
+		guess = int(user_entry.get())
+		if guess < number_to_guess:
+			results_label.config(text="Too Low.")
+			number_of_guesses += 1
+		elif guess > number_to_guess:
+			results_label.config(text="Too High")
+			number_of_guesses += 1
+		else:
+			number_of_guesses += 1
+			results_label.config(text=f"You have guessed the secret #{number_to_guess} in {number_of_guesses} guesses.")
+			enter_button.config(state=DISABLED)
+			reset_button.pack(pady=10)
+
+	except Exception as e:
+		results_label.config(text=f"Invalid entry: {e}")
+
+def gui():
+	global user_entry, computer_label, user_label, results_label, enter_button, reset_button
+	clear()
+	root = Tk()
+	root.title("GUESSING GAME")
+	root.geometry('700x500')
+
+	instruction_label = Label(root, text="Choose A Number From 1 To 10:", font=("Helvetica", 20))
+	instruction_label.pack(pady=10)
+	user_entry = Entry(root, font=("Helvetica", 50), width=3, justify="center")
+	user_entry.pack(pady=10)
+	computer_label = Label(root, text="Welcome To The Game")
+	computer_label.pack(pady=10)
+	user_label = Label(root, text="Have A Blessed day")
+	user_label.pack(pady=10)
+	results_label = Label(root, text="Enjoy")
+	results_label.pack(pady=10)
+	enter_button = Button(root, text="ENTER", font=("Helvetica", 30), command=game)
+	enter_button.pack(pady=10)
+	reset_button = Button(root, text="RESET", font=("Helvetica", 20), command=reset)
+	reset_button.pack(pady=10)
+
+	root.mainloop()
+
+gui()
