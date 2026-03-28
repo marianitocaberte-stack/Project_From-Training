@@ -1,0 +1,1 @@
+This repository was made to document and share all my learnings with John Elder of Codemy.com. It is intended to those individual looking for some small project with regards to Python. Check it out and help yourself. God bless.
