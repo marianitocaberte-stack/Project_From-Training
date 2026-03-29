@@ -1,0 +1,78 @@
+import os 
+import random
+from collections import Counter
+
+
+def clear_screen():
+	os.system("clear")
+
+# hangman game coding process flow
+#1 established a random word created from a text file.
+#2 define the word length
+#3 create a set for correct letters
+#4 create a set for incorrect letters
+#5 set lives as to how many guesses allowed
+#6 validate if its a single letter and not a number
+#7 validate if the letter is already chosen
+#8 check if letter is correct and update the correct_letter set otherwise update incorrect_letter set
+#9 check if all letters are correctly guessed
+#10 check if lives is already used up
+
+#2a create a function to extract text file, clean it to becomes lists of words
+def clean_words():
+	with open("text.txt","r", encoding="utf-8")as file: # extracting file
+		words = file.read() # reading file
+		words = "".join(letter for letter in words if letter.isalpha() or letter.isspace()) # sanitizing words, eliminating numbers and special characters
+		words = list((Counter(words.split())).keys()) # removing repeated words and transform it into list
+		words = [word for word in words if len(word) >= 6] # removing words with less than 6 characters.
+		return words
+
+def display_word(word, correct_letters):
+	return " ".join([letter if letter in correct_letters else "_" for letter in word])
+
+#1 create function for the game	
+def play_hangman():
+	words = clean_words() #2 establishe a list of clean words
+	word = (random.choice(words)).lower()
+	print("\nWelcome To HangMan:")
+	print(f"Word To Guess Has [{len(word)}] letters.")
+	print("Secret Word:", word)
+
+	correct_letters = set()
+	incorrect_letters = set()
+	allowed_guesses = 6
+
+	while allowed_guesses > 0:
+		print(f"\nMystery Word: [{display_word(word, correct_letters)}]")
+		print(f"\nIncorrect Letter: {", ".join(incorrect_letters)}")
+		print(f"Allowed Guess Remaining: {allowed_guesses}")
+
+		guess = input("\nEnter Your Guess: ")
+
+		if len(guess) != 1 or not guess.isalpha():
+			clear_screen()
+			print("Please enter a single letter and not number and not special character.")
+			continue
+
+		if guess in correct_letters or guess in incorrect_letters:
+			clear_screen()
+			print("You already have use that letter.")
+			continue
+
+		if guess in word:
+			clear_screen()
+			correct_letters.add(guess)
+			print("Good Job.")
+		else:
+			clear_screen()
+			incorrect_letters.add(guess)
+			print("Incorrect")
+			allowed_guesses -= 1
+
+		if all(letter in correct_letters for letter in word):
+			print("Brilliant, You Got it Right")
+			break
+
+	print(f"The Mystery Word is: [{word}]")
+
+play_hangman()
