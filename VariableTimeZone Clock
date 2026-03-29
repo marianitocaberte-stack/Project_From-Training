@@ -1,0 +1,64 @@
+import os 
+import random
+from datetime import datetime
+from zoneinfo import ZoneInfo
+import time 
+import threading
+
+def clear():
+	os.system("clear")
+
+def input_thread(stop_event):
+	input()
+	stop_event.set()
+
+def main_clock():
+	time_zones = {
+	"1": ("Manila", "Asia/Manila"),
+	"2": ("Tokyo", "Asia/Tokyo"),
+	"3": ("Singapore", "Asia/Singapore"),
+	"4": ("New York", "America/New_York"),
+	"5": ("Chicago", "America/Chicago"),
+	"6": ("Los Angeles", "America/Los_Angeles"),
+	"7": ("Sydney", "Australia/Sydney"),
+	"8": ("New Zealand", "Pacific/Auckland"),
+	"9": ("Dubai", "Asia/Dubai"),
+	"10": ("India", "Asia/Kolkata"),
+	"11": ("London", "Europe/London"),
+	"12": ("Paris", "Europe/Paris"),
+	"13": ("Germany", "Europe/Berlin"),
+	"14": ("Moscow", "Europe/Moscow"),
+	"15": ("Egypt", "Africa/Cairo"),
+	"16": ("South Africa", "Africa/Johannesburg"),
+	"17": ("West Africa", "Africa/Lagos")
+	}
+
+	for key, (name,_) in time_zones.items():
+		print(f"{key}: {name}")
+
+	choice = input("Enter a number for desired time zone: ")
+
+	if choice not in time_zones:
+		tz_name = "Asia/Manila"
+		tz_display_name = "Manila"
+	else:
+		tz_display_name, tz_name = time_zones[choice]
+
+
+
+	stop_event = threading.Event()
+	thread = threading.Thread(target=input_thread, args=(stop_event, ))
+	thread.daemon = True
+	thread.start()
+
+
+	while not stop_event.is_set():
+		clear()
+		current_time = datetime.now(ZoneInfo(tz_name)).strftime("%H: %M: %S: %p")
+		print(f"Time Check: {current_time} --->{tz_display_name}")
+		print("Press Enter to stop the clock.")
+		time.sleep(1)
+
+	print("Clock stopped.....")
+
+main_clock()
